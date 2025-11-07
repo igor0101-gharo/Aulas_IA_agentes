@@ -10,7 +10,7 @@ tema = st.text_input("Tema de estudo: ", placeholder="Ex.:Algoritmos")
 objetivo = st.text_input("Objetivo: ",placeholder="Ex.:Entender conceitos")
 
 executar = st.button("Gerar material")
-api_key = 'SUA_CHAVE_API'
+api_key = 'SUA CHAVE API'
 
 if executar:
     #características
