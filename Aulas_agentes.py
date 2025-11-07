@@ -63,3 +63,46 @@ agente_gabarito = agent(
     ),
     backstory= "Você confere consistência e explica rapidamente o porquê da resposta.",
     llm=llm, verbose=false
+
+t_resumo = task(
+    description=(
+        "RESUMO: escreva em português do Brasil um resumo didático sobre {tema} e objetivo {objetivo}"
+        "inclua: definição (3-4 frases), por que importa (2-3), onde se aplica (2,3) e 4-6 ideias chaves"
+        "com marcadores.Formate em Markdown com título."
+    ),
+    agent=agente_resumo,
+    expected_output= "Resumo em Markdown com título, parágrafos curtos e 4-6 marcadores(bullets)"
+)
+
+t_exemplos = task(
+    description=(
+        "Padrão (até 5 linhas cada): Título, cenário, dados/entrada, como aplicar (1-2 frases), resultado"
+    ),
+    agent=agente_exemplos,
+    expected_output = "Lista numerada(1-4) em Markdown com exemplos curtos e completos"
+
+)
+
+t_exercicios=task(
+    description=(
+        "EXERCÍCIOS:crie 4 exercícios simples sobre {tema} em PT-BR"
+        "Varie formatos e não inclua respostas"
+        "Entregue lista numerada(1-4) em Markdown"
+    ),
+    agent=agente_exercicios,
+    expected_output="Lista numerada (1-4) com exercícios simples, sem respostas"
+)
+
+t_gabarito=task(
+    description=(
+        "GABARITO: Com base nos EXERCÍCIOS fornecidos no contexto, produza as respostas corretas"
+        "Para cada item, dê:\n"
+        "- Resposta: (letra, valor, solução)\n"
+        "- Comentário: justificativa breve e direta (1-2 frases), citando o ceonceito-chave\n"
+        "Formato: Lista numerada (1 a 3) em Markdown."
+    ),
+    agent=agente_gabarito,
+    expected_output="Lista numerada (1 a 3) com resposta e comentário por exercício.",
+    context=[t_exercicios]
+
+)
