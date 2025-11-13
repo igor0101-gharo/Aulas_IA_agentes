@@ -25,7 +25,7 @@ if executar:
     )
 
     #Agentes
-    agente_resumo = agent(
+    agente_resumo = Agent(
         role="Redator de resumo didático",
         # O que deve fazer. 
         goal=(
@@ -36,17 +36,17 @@ if executar:
         llm= llm, verbose=False
     )
 
-    agente_exemplos = agent(
+    agente_exemplos = Agent(
         role="Criador de exemplos contextualizados",
         goal=(
             "Gerar 5 EXEMPLOS CURTOS sobre {tema}, cada um com contexto realista."
             "Cada exemplo com título (em negrito), cenário, dados(se houver), aplicação e resultado"
         ),
         backstory= "Você mostra o conceito em ação com exemplos breves e concretos.",
-        llm=llm, verbose=false
+        llm=llm, verbose=False
     )
 
-    agente_exercicios = agent(
+    agente_exercicios = Agent(
         role="Criador de exercícios",
         goal=(
             "Criar 4 EXERCÍCIOS SIMPLES sobre {tema}"
@@ -54,18 +54,19 @@ if executar:
             "Enunciados claros. NÃO incluir respostas"
         ),
         backstory= "Você cria atividades rápidas qie fixam conceitos essenciais",
-        llm=llm, verbose=false
+        llm=llm, verbose=False
     )
-    agente_gabarito = agent(
+    agente_gabarito = Agent(
         role="Revisor e gabaritador",
         goal=(
             "Ler os EXERCÍCIOS sobre {tema} e produzir GABARITO oficial, com respostas corretas e justificativa breve (1-3 frases) por item"
         ),
         backstory= "Você confere consistência e explica rapidamente o porquê da resposta.",
-        llm=llm, verbose=false
+        llm=llm, verbose=False
+    )
 
     #tarefas
-    t_resumo = task(
+    t_resumo = Task(
         description=(
             "RESUMO: escreva em português do Brasil um resumo didático sobre {tema} e objetivo {objetivo}"
             "inclua: definição (3-4 frases), por que importa (2-3), onde se aplica (2,3) e 4-6 ideias chaves"
@@ -75,7 +76,7 @@ if executar:
         expected_output= "Resumo em Markdown com título, parágrafos curtos e 4-6 marcadores(bullets)"
     )
 
-    t_exemplos = task(
+    t_exemplos = Task(
         description=(
             "Padrão (até 5 linhas cada): Título, cenário, dados/entrada, como aplicar (1-2 frases), resultado"
         ),
@@ -84,7 +85,7 @@ if executar:
 
     )
 
-    t_exercicios=task(
+    t_exercicios=Task(
         description=(
             "EXERCÍCIOS:crie 4 exercícios simples sobre {tema} em PT-BR"
             "Varie formatos e não inclua respostas"
@@ -94,7 +95,7 @@ if executar:
         expected_output="Lista numerada (1-4) com exercícios simples, sem respostas"
     )
 
-    t_gabarito=task(
+    t_gabarito=Task(
         description=(
             "GABARITO: Com base nos EXERCÍCIOS fornecidos no contexto, produza as respostas corretas"
             "Para cada item, dê:\n"
@@ -117,10 +118,10 @@ if executar:
         Process=Process.sequential
         )
     
-    crew.kickoff(inputs=(
-        "tema":tema
-        "objetivo": objetivo or "não informado"
-    ))
+    crew.kickoff(inputs={
+        "tema":tema,
+        "objetivo": objetivo or "não informado",
+    })
 
     #exibir resultados.
     resumo_out= getattr(t_resumo,"output", None) or getattr(t_resumo,"result", "") or "" 
